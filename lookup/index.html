@@ -29,7 +29,7 @@ function card(o){const st=o.status==='成立'?'<span class="tag ok">已成立</s
  const ship=o.pickup?'面交當天現金付款':o.freeShip?'滿 $1,000 免運 🎉,取貨時付款':'另加運費約 $38–60,取貨時付款';
  return `<div class="card"><div class="oh"><b>${esc(o.id)}</b><span class="mute">${esc(o.time)}</span></div><div>${st}${prog}</div>
  <div class="row"><span>船</span><span>${esc(o.items)||'—'}</span></div>${o.detail?`<div class="row"><span>紀念座</span><span>${esc(o.detail)}</span></div>`:''}${o.box?`<div class="row"><span>加購</span><span>${esc(o.box)}</span></div>`:''}
- <div class="row"><span>取貨</span><span>${esc(o.where)}</span></div>${o.wait?`<div class="row"><span>候補</span><span>${esc(o.wait)}</span></div>`:''}
+ <div class="row"><span>取貨</span><span>${esc(o.where)}</span></div>${o.wait?`<div class="row"><span>候補</span><span>${esc(o.wait)}</span></div>`:''}${o.limit?`<div class="row" style="color:var(--warn)"><span>提醒</span><span>每人限購 5 艘(全部船合計),這張單超過了,先列候補不佔名額,我們會私訊跟您確認</span></div>`:''}
  <div class="oh" style="margin-top:10px"><span class="mute">${o.status==='取消'?'':ship}</span><span class="amt">$${n(o.due)}</span></div></div>`}
 $('f').onsubmit=ev=>{ev.preventDefault();$('e').textContent='';$('r').innerHTML='';$('b').disabled=true;$('b').textContent='查詢中…';
  fetch(API+'?'+new URLSearchParams({api:'lookup',acct:$('a').value,p3:$('p').value})).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error);
