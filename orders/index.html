@@ -41,7 +41,7 @@ details.nt{margin:4px 0 0;border:0;padding:0}details.nt summary{color:var(--mute
 #mail{max-height:440px;overflow:auto}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--card);padding:8px 14px;border-radius:18px;font-size:14px;display:none;z-index:10}
 </style></head><body><main>
-<div class="top"><h1>千一工坊 訂單看板</h1><? if (statsUrl) { ?><a class="btn" href="<?= statsUrl ?>" target="_top" style="text-decoration:none">📊 列印統計</a><? } ?><span class="mute" id="upd">載入中…</span></div>
+<div class="top"><h1>千一工坊 訂單看板</h1><span class="mute" id="upd">載入中…</span></div>
 <div class="kpis" id="kpis"></div>
 <div class="grid" id="adm" style="display:none"><section class="card"><h2>🧾 要處理（客人問題）</h2><div id="iss"></div></section>
 <section class="card"><div class="ordtop"><h2>📬 最新回信</h2><button class="btn" onclick="loadMail(this)">重新收信</button></div><div id="mail"><div class="mute">載入中…</div></div></section></div>
@@ -55,7 +55,7 @@ details.nt{margin:4px 0 0;border:0;padding:0}details.nt summary{color:var(--mute
 <script>
 const API='https://script.google.com/macros/s/AKfycbx0nNYNGuoVxdRAkhwsf3tqfwKlyHR_xzKE5O-zboX6ooaaaQ39fO_X3v4_cpckaxzslg/exec';const T=(new URLSearchParams(location.hash.slice(1))).get('k')||'';
 function call(q){return fetch(API+'?'+new URLSearchParams(q)).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error);return d})}
-function getData(){return T?call({api:'dash',k:T}):Promise.reject(new Error('網址缺少鑰匙'))}function doAct(id,f,v){return call({api:'act',k:T,id:id,f:f,v:String(v)})}
+function getData(){return T?call({api:'dash',k:T}):(document.querySelector('main').innerHTML='<h1>千一工坊</h1><p class="mute" style="margin-top:12px">這是內部頁面 ⚓ 查詢訂單請到 <a href="../lookup/">訂單查詢</a></p>',new Promise(()=>{}))}function doAct(id,f,v){return call({api:'act',k:T,id:id,f:f,v:String(v)})}
 const $=id=>document.getElementById(id);const n=x=>Number(x||0).toLocaleString();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let D=null,F='all',busy=false,Q='';
