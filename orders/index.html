@@ -1,0 +1,190 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>千一工坊 訂單看板</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1b1f24;--mute:#6b7280;--line:#e5e7eb;--acc:#1f4e8c;--ok:#1a7f4b;--warn:#b45309;--bad:#b42318;--bar:#dbe4f0;--soft:#eef3fa}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1216;--card:#171b21;--ink:#e8eaed;--mute:#9aa3ad;--line:#2a3038;--acc:#7aa7e6;--ok:#4cc38a;--warn:#f0a44b;--bad:#f2766b;--bar:#26303c;--soft:#1d2530}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,"PingFang TC","Noto Sans TC",sans-serif}
+main{max-width:980px;margin:auto;padding:16px}h1{font-size:20px;margin:0}h2{font-size:15px;margin:0 0 10px;color:var(--mute);font-weight:600}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:14px;flex-wrap:wrap}.mute{color:var(--mute);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}.kpis .card{margin:0}.k b{display:block;font-size:24px;font-variant-numeric:tabular-nums}.k span{color:var(--mute);font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid .card{margin-bottom:14px}@media(max-width:720px){.grid{grid-template-columns:1fr;gap:0}}
+.row{display:grid;grid-template-columns:78px 1fr 72px;gap:8px;align-items:center;margin:6px 0;font-size:14px}
+.track{height:14px;background:var(--bar);border-radius:7px;overflow:hidden}.fill{height:100%;background:var(--acc)}.fill.full{background:var(--bad)}.fill.low{background:var(--warn)}
+.num{text-align:right;font-variant-numeric:tabular-nums}.todo li{margin:4px 0}.todo{padding-left:18px;margin:0}
+.tag{display:inline-block;padding:1px 7px;border-radius:9px;font-size:12px;border:1px solid var(--line);margin:1px 0}.tag.ok{color:var(--ok)}.tag.warn{color:var(--warn)}.tag.bad{color:var(--bad)}.tag.cx{background:var(--bad);border-color:var(--bad);color:#fff}.tag.big{background:var(--acc);border-color:var(--acc);color:#fff}
+.err{color:var(--bad)}
+.btn{font:inherit;font-size:13px;padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--mute);cursor:pointer}.btn.on{background:var(--ok);border-color:var(--ok);color:#fff}.btn:disabled{opacity:.5}.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+select,input,textarea{font:inherit;font-size:14px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%}
+.of select{width:auto;font-size:13px;padding:5px 6px}select.s-ok{color:var(--ok);border-color:var(--ok)}select.s-warn{color:var(--warn);border-color:var(--warn)}select.s-bad{color:var(--bad);border-color:var(--bad)}
+.admin{display:inline-block;margin-left:8px;font-size:12px;padding:1px 8px;border-radius:9px;background:var(--acc);color:#fff}
+.ord{padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.ord:last-child{border-bottom:0}.ord.x{opacity:.75}.ord.x>div:not(.of){color:var(--mute)}.ord.w{border-left:3px solid var(--warn);padding-left:8px}
+.oh{display:flex;justify-content:space-between;font-size:15px;gap:8px}.of{margin-top:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}.del{text-decoration:line-through;color:var(--mute)}
+details{margin-top:12px;border-top:2px dashed var(--line);padding-top:8px}summary{cursor:pointer;color:var(--bad);font-weight:600;font-size:14px;padding:6px 0}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:6px;-webkit-overflow-scrolling:touch}.chip{flex:none;font:inherit;font-size:13px;padding:5px 11px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}.chip.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.ordtop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.ordtop h2{margin:0}
+.sum{background:var(--soft);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:14px}.sum b{font-size:18px}
+.bars{display:flex;align-items:flex-end;gap:4px;height:90px;margin:6px 0 2px}.bars div{flex:1;background:var(--acc);border-radius:3px 3px 0 0;min-height:1px}.bl{display:flex;gap:4px}.bl span{flex:1;font-size:10px;color:var(--mute);text-align:center;overflow:hidden}
+.ptab{width:100%;border-collapse:collapse;font-size:14px}.ptab td{padding:4px 0;border-bottom:1px solid var(--line)}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:9}#modal.on{display:flex}
+.mbox{background:var(--card);border-radius:14px;padding:16px;width:100%;max-width:520px}.mbox h3{margin:0 0 10px}.fg{margin:8px 0}.fg label{display:block;font-size:12px;color:var(--mute);margin-bottom:3px}
+.qg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.qg label{font-size:12px}.mact{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.k small{display:block;color:var(--mute);font-size:12px;margin-top:2px}.k.hot b{color:var(--bad)}
+.iss{padding:10px 0;border-bottom:1px solid var(--line)}.iss:last-child{border-bottom:0}.ih{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:14px}
+.it{display:flex;gap:6px;align-items:flex-start;margin:6px 0 0;font-size:14px}.it span{flex:1}.it .btn{padding:3px 9px;font-size:12px;flex:none}
+.mail{padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}.mail:last-child{border-bottom:0}.mail pre{white-space:pre-wrap;font:inherit;margin:4px 0 0}
+a.oid{color:var(--acc);font-weight:600;text-decoration:none;cursor:pointer}
+.prow{display:grid;grid-template-columns:78px 1fr 64px auto;gap:8px;align-items:center;margin:6px 0;font-size:14px}.pm{display:flex;gap:4px}.pm .btn{padding:2px 9px}
+.fill.done{background:var(--ok)}
+.pill{display:inline-block;padding:1px 8px;border-radius:9px;font-size:12px;color:#fff;background:var(--ok)}.pill.warn{background:var(--warn)}.pill.bad{background:var(--bad)}
+details.nt{margin:4px 0 0;border:0;padding:0}details.nt summary{color:var(--mute);font-weight:400;font-size:13px;padding:0}
+@media(max-width:560px){.kpis{grid-template-columns:repeat(3,1fr);gap:6px}.kpis .card{padding:9px}.k b{font-size:18px}.k span,.k small{font-size:11px}}
+#mail{max-height:440px;overflow:auto}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--card);padding:8px 14px;border-radius:18px;font-size:14px;display:none;z-index:10}
+</style></head><body><main>
+<div class="top"><h1>千一工坊 訂單看板</h1><? if (statsUrl) { ?><a class="btn" href="<?= statsUrl ?>" target="_top" style="text-decoration:none">📊 列印統計</a><? } ?><span class="mute" id="upd">載入中…</span></div>
+<div class="kpis" id="kpis"></div>
+<div class="grid" id="adm" style="display:none"><section class="card"><h2>🧾 要處理（客人問題）</h2><div id="iss"></div></section>
+<section class="card"><div class="ordtop"><h2>📬 最新回信</h2><button class="btn" onclick="loadMail(this)">重新收信</button></div><div id="mail"><div class="mute">載入中…</div></div></section></div>
+<div class="grid"><section class="card"><h2>各艦已售 / 限量 20</h2><div id="ships"></div><h2 style="margin-top:14px">🖨 生產進度（已印 / 要印）</h2><div id="need"></div></section>
+<section class="card"><h2>待辦</h2><ul class="todo" id="todo"></ul><h2 style="margin-top:14px">面交</h2><div id="pick"></div></section></div>
+<section class="card"><div class="ordtop"><h2 id="ordh">最近訂單</h2><button class="btn pri" id="addb" style="display:none" onclick="openEdit()">＋ 新增訂單</button></div><input id="q" type="search" placeholder="🔍 搜尋:姓名 / 帳號 / 訂單號 / 手機末碼 / 艦名" style="width:100%;box-sizing:border-box;padding:10px;margin:6px 0;font-size:16px;border:1px solid #ccc;border-radius:10px" oninput="Q=this.value.trim().toLowerCase();draw(D)"><div class="chips" id="chips"></div><div id="sum"></div><div id="ord"></div></section>
+<div class="grid"><section class="card"><h2>生產排程（還沒交貨的）</h2><div id="prod"></div></section>
+<section class="card"><h2>近 14 天營收</h2><div id="trend"></div></section></div>
+</main>
+<div id="modal"><div class="mbox" id="mbox"></div></div><div id="toast"></div>
+<script>
+const API='https://script.google.com/macros/s/AKfycbx0nNYNGuoVxdRAkhwsf3tqfwKlyHR_xzKE5O-zboX6ooaaaQ39fO_X3v4_cpckaxzslg/exec';const T=(new URLSearchParams(location.hash.slice(1))).get('k')||'';
+function call(q){return fetch(API+'?'+new URLSearchParams(q)).then(r=>r.json()).then(d=>{if(d.error)throw new Error(d.error);return d})}
+function getData(){return T?call({api:'dash',k:T}):Promise.reject(new Error('網址缺少鑰匙'))}function doAct(id,f,v){return call({api:'act',k:T,id:id,f:f,v:String(v)})}
+const $=id=>document.getElementById(id);const n=x=>Number(x||0).toLocaleString();
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let D=null,F='all',busy=false,Q='';
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',1800)}
+function act(id,field,val,el){if(busy)return Promise.resolve();busy=true;el&&(el.disabled=true);$('upd').textContent='儲存中…';
+ return doAct(id,field,val).then(d=>{busy=false;draw(d);toast(d.msg||'已儲存');return true}).catch(e=>{busy=false;if(el)el.disabled=false;$('upd').innerHTML='<span class="err">儲存失敗:'+esc(e.message||e)+'</span>';toast('儲存失敗');load();return false})}
+function tg(o,k,label,on){return `<button class="btn ${on?'on':''}" onclick="act('${esc(o.id)}','${k}',${!on},this)">${on?'✓ ':''}${label}</button>`}
+// ① 一鍵複製私訊
+const wtxt=o=>o.wq.map(w=>`${w.s} 候補第 ${w.pos} 位（前面還有 ${w.ahead} 組）`).join('\n');
+function msg(o){if(!o.items){const av=D.ships.filter(s=>s.left>0).map(s=>`${s.id}（剩 ${s.left}）`).join('、')||'目前全部售完';
+  return `您好～謝謝您填寫千一工坊的預購表單 🙏\n您這次送出的表單沒有選到任何船（可能是忘了選數量，或送出的那一刻剛好被訂完）。\n目前還有：${av}\n想改訂其他艘，或是排候補等有人取消嗎？回覆我們就幫您登記！`}
+ if(o.day==='最早一場')return D.nextPickup?`您好～千一工坊通知：您的船做好了 🎉\n訂單 ${o.id}：${o.items}\n提早面交場：${D.nextPickup} 17:30–18:00\n地點：${D.pickupAddr}\n金額：$${n(o.due)}（現金）\n會來的話回覆「可以」就好；沒回覆就幫您排到您勾的 ${o.fb}～`
+   :`您好～千一工坊已收到您的訂單 ${o.id} 🙏\n品項：${o.items}\n方案：${o.plan}\n金額：$${n(o.due)}（面交現金付款）\n面交：最早一場，船做好後會通知最近的面交日（平日 17:30–18:00），不方便就排到您勾的 ${o.fb}\n地點：${D.pickupAddr}`;
+ if(F.startsWith('day:')&&o.pickup)return `您好～千一工坊提醒您 ${o.day} 17:30–18:00 面交 🙌\n訂單 ${o.id}：${o.items}\n金額：$${n(o.due)}（現金，麻煩盡量備零錢）\n地點：${D.pickupAddr}\n到了請私訊我們～臨時不能來請提前告知，未到且未告知將視為棄單，謝謝！`;
+ if(/候補/.test(o.status)&&o.wq.length)return `您好～千一工坊已收到您的訂單 ${o.id} 🙏\n品項：${o.items}\n目前名額已滿，以下列為候補：\n${wtxt(o)}\n${o.status==='部分候補'?'其餘品項已成立，會先幫您保留。\n':''}有人取消會依下單順序遞補，輪到您時我們會再私訊通知，候補期間不用付款。謝謝您的支持！`;
+ const head=`您好～千一工坊已收到您的訂單 ${o.id} 🙏\n品項：${o.items}\n方案：${o.plan}${o.detail?'（'+o.detail+'）':''}\n${(String(o.note).match(/舷號客製:([^;]+)/)||[])[1]?'舷號客製：'+String(o.note).match(/舷號客製:([^;]+)/)[1]+'\n':''}`;
+ return o.pickup?head+`金額：$${n(o.due)}（面交現金付款）\n面交：${o.day} 17:30–18:00\n地點：${D.pickupAddr}\n當天到了請私訊我們，謝謝！`
+  :head+`金額：$${n(o.due)}${o.freeShip?'（滿 $1,000 免運 🎉，取貨時付款）':'（另加運費約 $38–60，取貨時付款；滿 $1,000 免運）'}\n👉 賣場連結：${D.shopUrl}\n下單步驟：\n${(o.spec||[]).map((x,k)=>(k+1)+'. 選 '+x+' → 加入購物車').join('\n')}\n全部加入後再結帳，共 $${n(o.due)}\n⚠ 結帳時請在備註寫訂單編號「${o.id}」\n請 3 天內下單，依下單順序陸續出貨（最晚 12/7 那週），有問題隨時私訊我們～`}
+function copyMsg(id){const o=D.recent.find(x=>x.id===id),t=msg(o);
+ const ok=()=>toast(o.pickup?'已複製，貼到 IG 傳給買家':'已複製，記得貼上賣貨便連結');
+ const fb=()=>{const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,99999);let r=false;try{r=document.execCommand('copy')}catch(e){}a.remove();r?ok():prompt('複製下面文字',t)};
+ if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(ok,fb);else fb()}
+// ⑨ 待處理問題
+function iq(o,i){const sm=o.same.filter(x=>{const y=D.recent.find(r=>r.id===x);return y&&y.status==='成立'});
+ if(i.type==='acct')return `您的表單沒有留 IG 帳號或 FB 名稱，${o.pickup?'面交前要私訊通知您時間':'出貨前要私訊傳賣貨便連結給您'}，麻煩回覆您的 IG 帳號或 FB 名稱 🙏`;
+ if(i.type==='box')return `您選的壓克力盒比船多（一個盒子放一艘），先調整為 ${o.box} 個。`+(sm.length?`您另一張 ${sm.join('、')} 也成立了，多的盒子要加到那張嗎？(+$100)`:'這樣可以嗎？');
+ if(i.type==='limit')return '每人每款限購 5 艘，超出的部分幫您排在候補（候補期間不用付款），有名額會依順序通知您，這樣可以嗎？';
+ if(i.type==='bulk')return `您這次訂的數量比較多，會依下單順序陸續出貨（最晚 12/7 那週），這樣可以嗎？`;
+ if(i.type==='hull')return '關於舷號客製：'+i.text.replace(/^舷號待確認:/,'')+'，請問要怎麼處理？';
+ if(i.type==='mail')return '';
+ return i.text}
+function issueText(o){if(o.issues.some(i=>i.type==='empty'))return msg(o);const q=o.issues.map(i=>iq(o,i)).filter(Boolean);
+ return `您好～千一工坊跟您確認訂單 ${o.id} 🙏\n`+(q.length>1?q.map((x,k)=>(k+1)+'. '+x).join('\n'):q[0]||'')}
+function copyText(t,okMsg){const ok=()=>toast(okMsg||'已複製');
+ const fb=()=>{const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,99999);let r=false;try{r=document.execCommand('copy')}catch(e){}a.remove();r?ok():prompt('複製下面文字',t)};
+ if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(ok,fb);else fb()}
+function copyIssue(id){copyText(issueText(D.recent.find(x=>x.id===id)),'已複製問題，貼到 IG 傳給客人')}
+function iop(id,op,segs,el){act(id,'issue',JSON.stringify({op,segs}),el)}
+function addQ(id){$('mbox').innerHTML=`<h3>＋ 要問 ${esc(id)} 的問題</h3><textarea id="aq" rows="3" placeholder="例：1115 逢甲用成功級外型可以嗎？"></textarea>
+ <div class="mact"><button class="btn" onclick="closeEdit()">取消</button><button class="btn pri" onclick="const t=$('aq').value.trim();if(!t){toast('請輸入問題');return}act('${esc(id)}','issue',JSON.stringify({op:'add',text:t}),this).then(ok=>{if(ok)closeEdit()})">加入</button></div>`;
+ $('modal').classList.add('on');setTimeout(()=>$('aq').focus(),50)}
+function promote(id,el){const o=D.recent.find(x=>x.id===id);if(!confirm(id+' 遞補成立並寄通知信'+(o.hasEmail?'':'（沒有 Email，只改狀態）')+'？'))return;act(id,'promote','1',el)}
+function findId(i){Q=i.toLowerCase();$('q').value=i;F='all';draw(D);$('ordh').scrollIntoView({behavior:'smooth'})}
+const oidLink=i=>`<a class="oid" onclick="findId('${esc(i)}')">${esc(i)}</a>`;
+function loadMail(el){if(el)el.disabled=true;$('mail').innerHTML='<div class="mute">收信中…</div>';
+ doAct('','inbox','3').then(r=>{if(el)el.disabled=false;const M=r.mails||[];
+  $('mail').innerHTML=M.length?M.map(m=>`<div class="mail"><div class="ih"><span class="mute">${esc(m.t)}</span>${m.id?oidLink(m.id):'<span class="tag">沒單號</span>'}<b>${esc(m.from)}</b></div><pre>${esc(String(m.text||'').split(/\r?\n/).map(l=>l.trim()).filter(l=>l&&!/從我的iPhone傳送|Sent from my|您好,這裡是千一工坊/.test(l)).join('\n')||'（沒有文字）')}</pre></div>`).join('')+'<div class="mute" style="margin-top:6px">近 3 天・已處理的回覆記得到「要處理」按 ✔</div>':'<div class="mute">近 3 天沒有客人來信</div>'})
+ .catch(e=>{if(el)el.disabled=false;$('mail').innerHTML='<span class="err">收信失敗:'+esc(e.message||e)+'</span>'})}
+function setHull(note,v){const s=String(note||'').split(';').filter(x=>x&&!/^舷號定案:/.test(x.trim()));if(v.trim())s.push('舷號定案:'+v.trim().replace(/;/g,','));return s.join(';')}
+// ③⑤ 新增 / 修改訂單
+function openEdit(id){const o=id?D.recent.find(x=>x.id===id):{q:D.shipIds.map(()=>0),box:0,bO:0,bB:0,bN:0,detail:'',whereRaw:D.whereChoices[0],cat:'私訊',name:'',acct:'',note:''};
+ const opt=(arr,cur)=>arr.map(v=>`<option ${v===cur?'selected':''}>${esc(v)}</option>`).join('');
+ const wh=D.whereChoices.indexOf(o.whereRaw)>=0?D.whereChoices:D.whereChoices.concat([o.whereRaw]);
+ $('mbox').innerHTML=`<h3>${id?'修改 '+esc(id):'新增訂單'}</h3>
+ <div class="fg"><label>類別</label><select id="e_cat">${[['','一般'],['私訊','私訊'],['大單','大單（不占預購名額，可自訂金額）']].map(([v,l])=>`<option value="${v}" ${(o.cat||'')===v?'selected':''}>${l}</option>`).join('')}</select></div>
+ <div class="fg"><label>姓名</label><input id="e_name" value="${esc(o.name)}"></div>
+ <div class="fg"><label>IG / Threads 帳號</label><input id="e_acct" value="${esc(o.acct)}"></div>
+ <div class="fg"><label>數量</label><div class="qg">${D.shipIds.map((s,i)=>`<label>${esc(s)}<input type="number" min="0" inputmode="numeric" id="e_q${i}" value="${o.q[i]||0}"></label>`).join('')}</div></div>
+ <div class="fg"><label>紀念座／名牌（數量）</label><div class="qg"><label>🌊 海洋座<input type="number" min="0" inputmode="numeric" id="e_bO" value="${o.bO||0}"></label><label>🏖 搶灘座<input type="number" min="0" inputmode="numeric" id="e_bB" value="${o.bB||0}"></label><label>名牌座<input type="number" min="0" inputmode="numeric" id="e_bN" value="${o.bN||0}"></label></div></div>
+ <div class="fg"><label>座明細（哪艘配什麼座）</label><input id="e_detail" placeholder="例 LCU 搶灘座×1、PFG-1101 海洋座×1" value="${esc(o.detail||'')}"></div>
+ <div class="fg"><label>壓克力盒（個）</label><input type="number" min="0" inputmode="numeric" id="e_box" value="${o.box||0}"></div>
+ <div class="fg"><label>收件方式</label><select id="e_where">${opt(wh,o.whereRaw)}</select></div>
+ <div class="fg"><label>金額（留空＝依方案自動算）</label><input type="number" inputmode="numeric" id="e_amt" placeholder="自動" value="${id&&o.cat==='大單'?o.due:''}"></div>
+ <div class="fg"><label>舷號定案（座上要印的；例 LST-230 中邦×3，沒有客製留空）</label><input id="e_hull" value="${esc(o.hullFin||'')}"></div>
+ <div class="fg"><label>備註</label><textarea id="e_note" rows="2">${esc(o.note)}</textarea></div>
+ <div class="mact"><button class="btn" onclick="closeEdit()">取消</button><button class="btn pri" onclick="saveEdit('${id?esc(id):''}',this)">儲存</button></div>`;
+ $('modal').classList.add('on')}
+function openLink(id){const o=D.recent.find(x=>x.id===id);
+ $('mbox').innerHTML=`<h2>📧 寄賣貨便連結・${esc(o.id)}</h2><div>${esc(o.name||'')}　${esc(o.acct)}<br>${esc(o.items)}</div>
+ <div class="sum" style="margin:10px 0">客人該付 <b style="font-size:1.3em">$${n(o.due)}</b>　${o.freeShip?'<span class="tag ok">✅ 滿千免運</span>':'<span class="tag warn">運費買家付</span>'}<div class="mute">客人下單後,核對賣貨便訂單金額 = 這個數字再出貨</div></div>
+ <div class="sum">要選的規格:<br>${(o.spec||[]).map(x=>esc(x)).join('<br>')}</div><label>賣場連結(預設共用賣場,特殊單可換)<input id="lk" type="url" value="${esc(D.shopUrl||'')}" style="width:100%"></label>
+ <div class="mute" style="margin:6px 0">送出後:寄到客人信箱(${o.hasEmail?'有 Email':'⚠ 沒有 Email,只會勾已傳連結'})、勾「已傳連結」、開始算 3 天;第 2 天自動寄提醒</div>
+ <div class="of"><button class="btn on" onclick="const u=$('lk').value.trim();if(u.indexOf('https:')!==0){toast('連結要 https 開頭');return}closeEdit();act('${esc(o.id)}','sendLink',u)">寄出</button> <button class="btn" onclick="closeEdit()">取消</button></div>`;
+ $('modal').classList.add('on');setTimeout(()=>$('lk').focus(),50)}
+function closeEdit(){$('modal').classList.remove('on')}
+function saveEdit(id,el){const o={cat:$('e_cat').value,name:$('e_name').value,acct:$('e_acct').value,q:D.shipIds.map((s,i)=>+$('e_q'+i).value||0),bO:+$('e_bO').value||0,bB:+$('e_bB').value||0,bN:+$('e_bN').value||0,detail:$('e_detail').value,box:+$('e_box').value||0,where:$('e_where').value,amt:$('e_amt').value,note:setHull($('e_note').value,$('e_hull').value)};
+ if(!o.q.some(x=>x>0)){toast('至少要 1 艘');return}if(!id&&!o.name&&!o.acct){toast('請填姓名或帳號');return}
+ act(id,id?'edit':'add',JSON.stringify(o),el).then(ok=>{if(ok)closeEdit()})}
+// ④ 篩選
+const FILTERS=[['all','全部',o=>true],['iss','⚠ 要處理',o=>o.issues.length>0],['unpaid','未收款',o=>!o.paid],['nolink','未傳連結',o=>!o.pickup&&!o.link],['wait','候補',o=>/候補/.test(o.status)],['ship','待寄出',o=>!o.pickup&&!o.sent],['big','大單/私訊',o=>!!o.cat]];
+function setF(f){F=f;draw(D)}
+function draw(d){D=d;
+ $('upd').innerHTML='更新 '+d.at+'・每 60 秒自動更新'+(d.admin?'<span class="admin">管理模式</span>':'');
+ $('addb').style.display=d.admin?'':'none';
+ const left=d.need.reduce((a,x)=>a+Math.max(0,x.need-x.done),0);
+ $('kpis').innerHTML=[['待回覆',d.waitReply+' 位','已問 '+d.asked+' 位',d.waitReply-d.asked>0],['訂單',d.k.orders+' 筆',d.k.ships+' 艘'],['應收','$'+n(d.k.due),'已收 $'+n(d.k.paid)],['還要印',left+' 艘',d.prod.printers+' 台約 '+d.prod.days+' 天'],['未傳連結',(d.k.nolink||0)+' 筆','出貨前再傳']].map(([a,b,c,hot])=>`<div class="card k ${hot?'hot':''}"><span>${a}</span><b>${b}</b>${c?'<small>'+c+'</small>':''}</div>`).join('');
+ $('adm').style.display=d.admin?'':'none';
+ if(d.admin){const L=d.recent.filter(o=>o.issues.length).sort((a,b)=>(a.issues.every(i=>i.asked)-b.issues.every(i=>i.asked))||a.id.localeCompare(b.id));
+  $('iss').innerHTML=L.length?L.map(o=>`<div class="iss"><div class="ih">${oidLink(o.id)}<span>${esc(o.name||'')}</span>${o.acct?'<span class="tag">'+esc(o.ch?o.ch+' ':'')+esc(o.acct)+'</span>':'<span class="tag bad">沒帳號</span>'}</div>
+   ${o.issues.map(i=>`<div class="it"><span>${i.asked?'<span class="pill warn">已問 '+esc(i.asked)+'</span> ':'<span class="pill bad">待問</span> '}${esc(i.text)}</span><button class="btn" title="標記已問" onclick="iop('${esc(o.id)}','ask',[${i.segs}],this)">已問</button><button class="btn on" title="已解決" onclick="iop('${esc(o.id)}','done',[${i.segs}],this)">✔</button></div>`).join('')}
+   <div class="of"><button class="btn pri" onclick="copyIssue('${esc(o.id)}')">📋 複製問題私訊</button><button class="btn" onclick="addQ('${esc(o.id)}')">＋ 問題</button></div></div>`).join(''):'<div class="mute">🎉 沒有待處理的問題</div>';
+  if(!window._mailLoaded){window._mailLoaded=1;loadMail()}}
+ $('need').innerHTML=d.need.filter(x=>x.need).map(x=>{const p=Math.min(100,x.done/x.need*100);return `<div class="prow"><span>${esc(x.id)}</span><div class="track"><div class="fill done" style="width:${p}%"></div></div><span class="num">${x.done}/${x.need}</span>${d.admin?`<span class="pm"><button class="btn" onclick="act('','printed',JSON.stringify({s:'${x.id}',d:-1}),this)">−</button><button class="btn" onclick="act('','printed',JSON.stringify({s:'${x.id}',d:1}),this)">＋</button></span>`:'<span></span>'}</div>`}).join('')+'<div class="mute">印好一艘按 ＋（含大單，不含候補）</div>';
+ $('ships').innerHTML=d.ships.map(s=>{const p=Math.min(100,s.sold/20*100),c=s.left<=0?'full':s.left<=5?'low':'';return `<div class="row"><span>${esc(s.id)}</span><div class="track"><div class="fill ${c}" style="width:${p}%"></div></div><span class="num">${s.sold} <span class="mute">剩${s.left}</span></span></div>`}).join('')+'<div class="mute">大單不算在限量內</div>';
+ $('todo').innerHTML=d.todo.length?d.todo.map(t=>{const ids=t.match(/Q\d{4}-\d{3}/g)||[];if(ids.length<=6)return `<li>${esc(t)}</li>`;const i=t.indexOf(ids[0]);return `<li>${esc(t.slice(0,i))}<details class="nt"><summary>看 ${ids.length} 筆單號</summary>${ids.map(oidLink).join(' ')}</details></li>`}).join(''):'<li class="mute">沒有待辦</li>';
+ $('pick').innerHTML=(d.admin?`<div class="fg" style="display:flex;gap:6px;align-items:center"><span class="mute" style="flex:none">⏩ 下一場提早面交日</span><input id="np" placeholder="例 12/9(三)" value="${esc(d.nextPickup||'')}"><button class="btn" onclick="act('','nextPickup',$('np').value,this)">存</button>${d.nextPickup?`<button class="btn pri" onclick="act('','notifyEarly','1',this)">📧 寄通知</button>`:''}</div>`:(d.nextPickup?`<div class="mute">⏩ 下一場提早面交：${esc(d.nextPickup)}</div>`:''))+(d.pick.length?d.pick.map(p=>`<div class="row" style="grid-template-columns:1fr auto"><span>${esc(p.day)}・${p.orders} 筆 ${p.ships} 艘</span><span class="num">$${n(p.due)} <span class="mute">已收 $${n(p.paid)}</span></span></div>`).join(''):'<div class="mute">還沒有自取單</div>');
+ // 篩選列(含 ② 面交日)
+ const fl=FILTERS.concat(d.pick.map(p=>['day:'+p.day,'📍 面交 '+p.day,o=>o.day===p.day]));
+ if(!fl.some(f=>f[0]===F))F='all';
+ $('chips').innerHTML=fl.map(f=>`<button class="chip ${f[0]===F?'on':''}" onclick="setF('${esc(f[0])}')">${esc(f[1])}</button>`).join('');
+ const fn=fl.find(f=>f[0]===F)[2];
+ const hit=o=>!Q||[o.id,o.name,o.acct,o.items,o.detail,o.note,o.p4,o.ch].join(' ').toLowerCase().indexOf(Q)>=0;
+ const live=d.recent.filter(o=>o.status!=='取消'&&fn(o)&&hit(o)),dead=d.recent.filter(o=>o.status==='取消'&&hit(o));
+ $('ordh').textContent=d.admin?'訂單':'最近訂單';
+ // ② 面交當天模式
+ if(F.startsWith('day:')){const L=live.filter(o=>!/候補/.test(o.status)),due=L.reduce((a,o)=>a+o.due,0),got=L.filter(o=>o.paid).reduce((a,o)=>a+o.due,0);
+  live.sort((a,b)=>(a.paid-b.paid)||String(a.name||a.acct).localeCompare(String(b.name||b.acct)));
+  $('sum').innerHTML=`<div class="sum">📍 ${esc(F.slice(4))} 17:30–18:00・${esc(d.pickupAddr)}<br>${L.length} 人・應收 <b>$${n(due)}</b>・已收 $${n(got)}・<span class="${due-got?'err':''}">還要收 $${n(due-got)}</span>（${L.filter(o=>o.paid).length}/${L.length} 已交貨）</div>`}
+ else $('sum').innerHTML='';
+ const card=o=>{const st=o.status==='成立'?'ok':o.status==='取消'?'bad':'warn',x=o.status==='取消';
+  const f=d.admin?[`<select class="s-${st}" onchange="act('${esc(o.id)}','狀態',this.value,this)">${['成立','部分候補','候補','取消'].map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join('')}</select>`,
+    x?'':(o.pickup?'':(o.link?tg(o,'已傳連結','已傳連結',true):`<button class="btn" onclick="openLink('${esc(o.id)}')">📧 寄賣貨便連結</button>`+tg(o,'已傳連結','已私訊傳了',false))),x?'':tg(o,'已收款',o.pickup?'已收款・已交貨':'已收款',o.paid),x||o.pickup?'':tg(o,'已出貨','已出貨',o.sent),
+    x?'':`<button class="btn" onclick="copyMsg('${esc(o.id)}')">📋 複製訊息</button>`,`<button class="btn" onclick="openEdit('${esc(o.id)}')">✏️ 修改</button>`,o.canPromote?`<button class="btn pri" onclick="promote('${esc(o.id)}',this)">🔔 遞補＋寄信</button>`:'',x?'':`<button class="btn" onclick="addQ('${esc(o.id)}')">＋ 問題</button>`,o.issues.length?`<button class="btn" onclick="copyIssue('${esc(o.id)}')">📋 問題私訊</button>`:''].join(' ')
+   :[x||o.pickup?'':(o.link?'<span class="tag ok">已傳連結</span>':'<span class="tag warn">未傳連結</span>'),x?'':(o.paid?'<span class="tag ok">已收款</span>':'<span class="tag">未收款</span>'),o.sent?'<span class="tag ok">已出貨</span>':''].join(' ');
+  return `<div class="ord ${x?'x':''} ${st!=='ok'&&!x?'w':''}"><div class="oh"><b>${esc(o.id)}${x?' <span class="tag cx">已取消</span>':o.status!=='成立'?' <span class="tag warn">'+esc(o.status)+'</span>':''}${o.cat?' <span class="tag big">'+esc(o.cat)+'</span>':''}${o.freeShip?' <span class="tag ok">免運</span>':''}${o.issues.length?' <span class="pill bad">⚠ '+o.issues.length+'</span>':''}</b><span class="num"><b class="${x?'del':''}">$${n(o.due)}</b></span></div>
+   <div class="mute">${esc(o.time)}・${esc(o.where)}・${esc(o.plan)}</div>
+   <div>${o.ch?'<span class="tag">'+esc(o.ch)+'</span> ':''}${esc(o.acct)}${o.name?'　'+esc(o.name):''}</div>${o.same.length?'<div>👥 同客人：'+o.same.map(oidLink).join(' ')+'</div>':''}${o.hullFin?'<div style="color:var(--acc)">🏷 舷號 '+esc(o.hullFin)+'</div>':''}${o.issues.length?'<div style="color:var(--bad)">⚠ '+o.issues.map(i=>esc(i.text)).join('<br>⚠ ')+'</div>':''}<div>${esc(o.items)}${o.detail?'<div style="color:var(--acc)">🪑 '+esc(o.detail)+'</div>':''}</div>${o.day==='最早一場'&&D.nextPickup&&!o.paid&&o.status!=='取消'?(o.emailed?'<div style="color:var(--ok)">📧 已寄 '+esc(D.nextPickup)+' 通知</div>':o.hasEmail?'<div class="mute">📧 尚未寄通知</div>':'<div style="color:var(--warn)">📱 沒填 Email，需私訊</div>'):''}${o.wq&&o.wq.length?'<div style="color:var(--warn)">⏳ '+esc(wtxt(o)).replace(/\n/g,'<br>⏳ ')+'</div>':''}${!o.pickup&&o.link&&!o.sent&&!o.paid&&o.linkDays>=0?'<div style="color:'+(o.linkDays>=3?'var(--bad)':'var(--warn)')+'">'+(o.linkDays>=3?'⏰ 傳連結已 '+o.linkDays+' 天還沒出貨,去賣貨便確認有沒有下單':'⏳ 傳連結第 '+(o.linkDays+1)+' 天'+(o.reminded?'・已寄提醒':''))+'</div>':''}${o.note?(o.note.length>60?'<details class="nt"><summary>備註</summary><div class="mute">'+esc(o.note)+'</div></details>':'<div class="mute">'+esc(o.note)+'</div>'):''}<div class="of">${f}</div></div>`};
+ const open=$('cxd')&&$('cxd').open;
+ $('ord').innerHTML=(live.map(card).join('')||'<div class="mute">沒有符合的訂單</div>')+(F==='all'&&dead.length?`<details id="cxd" ${open?'open':''}><summary>已取消（${dead.length} 筆）</summary>${dead.map(card).join('')}</details>`:'');
+ // ⑦ 生產排程
+ const P=d.prod,pl=P.list.filter(p=>p.n);
+ $('prod').innerHTML=pl.length||P.bases?`<table class="ptab">${pl.map(p=>`<tr><td>${esc(p.id)}</td><td class="num">${p.n} 艘</td><td class="num mute">${p.h} h</td></tr>`).join('')}${P.bases?`<tr><td>紀念座/名牌座${P.basesBy?'<div class="mute">'+Object.entries(P.basesBy).map(([k,v])=>esc(k)+' '+v).join('・')+'</div>':''}</td><td class="num">${P.bases} 座</td><td class="num mute">${Math.round(P.bases*1.92*10)/10} h</td></tr>`:''}</table>
+  <p style="margin:10px 0 0">合計 <b>${P.hours} h</b>・${P.printers} 台每天 ${P.perDay} h 約 <b style="color:${P.days>7?'var(--bad)':'inherit'}">${P.days} 天</b>${P.days>7?' <span class="err">超過 7 天交期</span>':''}</p><div class="mute">寄出或面交收款後就不算；不含換色時間與失敗重印</div>`:'<div class="mute">目前沒有待印</div>';
+ if(d.waitDemand&&d.waitDemand.length)$('prod').innerHTML+=`<h2 style="margin-top:14px">🕒 候補需求（第二批參考）</h2><table class="ptab">${d.waitDemand.map(w=>`<tr><td>${esc(w.id)}</td><td class="num">${w.people} 人</td><td class="num mute">${w.sets} 組</td></tr>`).join('')}</table>`;
+ // ⑧ 營收趨勢
+ const TR=d.trend,mx=Math.max(1,...TR.days.map(x=>x.rev));
+ $('trend').innerHTML=`<div class="bars">${TR.days.map(x=>`<div title="${x.d} $${n(x.rev)}" style="height:${x.rev/mx*100}%"></div>`).join('')}</div><div class="bl">${TR.days.map((x,i)=>`<span>${i%2?'':x.d.slice(3)}</span>`).join('')}</div>
+  <p style="margin:10px 0 0">營收 <b>$${n(TR.rev)}</b>・成本約 $${n(TR.cost)}・<b style="color:var(--ok)">毛利約 $${n(TR.margin)}</b></p><div class="mute">成本粗估：線材＋機時＋座＋壓克力盒(113)＋包材＋免運單運費(60)；不含諸元卡、運費、失敗重印</div>`;
+}
+function load(){if(busy||$('modal').classList.contains('on'))return;getData().then(draw).catch(e=>{$('upd').innerHTML='<span class="err">讀取失敗:'+esc(e.message||e)+'</span>'})}
+load();setInterval(load,60000);
+</script></body></html>
